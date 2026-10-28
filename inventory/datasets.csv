@@ -1,0 +1,4 @@
+dataset_id,title,path,version,licence_id,status,steward,updated,description
+sample_air_quality,Sample Air Quality Measurements (Synthetic),datasets/sample_air_quality,0.1.0,cc0_demo,published,toolkit-demo@example.org,2026-10-28,"Daily synthetic air-quality measurements (PM2.5, PM10, NO2, temperature) for two urban monitoring sites, January 2024."
+sample_biodiversity,Sample Biodiversity Observations (Synthetic),datasets/sample_biodiversity,0.1.0,cc0_demo,published,toolkit-demo@example.org,2026-10-28,"Field observation records of selected flora and fauna across three habitats, June 2024."
+sample_water_quality,Sample Water Quality Time Series (Synthetic),datasets/sample_water_quality,0.1.0,cc0_demo,published,toolkit-demo@example.org,2026-10-28,"Bi-monthly synthetic water quality parameters (pH, dissolved oxygen, turbidity, conductivity) for two river stations, January-June 2024."

@@ -1,0 +1,53 @@
+dataset_id: sample_water_quality
+title: Sample Water Quality Time Series (Synthetic)
+description: Bi-monthly synthetic water quality measurements for two river stations
+  (WQ-01, WQ-02) from January to June 2024. Parameters include pH, dissolved oxygen,
+  turbidity and electrical conductivity. The data are entirely synthetic and exist
+  to demonstrate the stewardship workflow.
+created: '2026-10-28'
+version: 0.1.0
+status: published
+steward: toolkit-demo@example.org
+language: en
+licence:
+  licence_id: cc0_demo
+  spdx: CC0-1.0
+  name: CC0 1.0 Universal
+  url: https://creativecommons.org/publicdomain/zero/1.0/
+rights_holder: Demo Observatory (synthetic data)
+keywords:
+- water quality
+- rivers
+- synthetic
+- demonstration
+fields:
+- name: month
+  type: string
+  description: Observation month (ISO 8601, YYYY-MM)
+- name: site_id
+  type: string
+  description: River station identifier (WQ-01 or WQ-02)
+- name: ph
+  type: number
+  description: pH value of the water sample (dimensionless)
+- name: dissolved_oxygen_mgl
+  type: number
+  description: Dissolved oxygen concentration, milligrams per litre
+- name: turbidity_ntu
+  type: number
+  description: Turbidity, nephelometric turbidity units
+- name: conductivity_uscm
+  type: number
+  description: Electrical conductivity, microsiemens per centimetre
+files:
+- path: data/water_quality_2024H1.csv
+  sha256: c2f4f259b533096ceae9e604f3e6df51215b2c99709e83c9d622223db0678599
+  bytes: 438
+updated: '2026-10-28'
+provenance:
+- timestamp: '2026-10-28T06:48:21Z'
+  event: ingest
+  version: 0.1.0
+  file: datasets/sample_water_quality/data/water_quality_2024H1.csv
+  sha256: c2f4f259b533096ceae9e604f3e6df51215b2c99709e83c9d622223db0678599
+  actor: demo-steward

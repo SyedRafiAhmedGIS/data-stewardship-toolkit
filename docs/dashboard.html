@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Stewardship Toolkit &mdash; Stewardship Dashboard</title>
+<style>
+:root{
+  --bg:#f4f6fa; --panel:#ffffff; --ink:#1c2434; --muted:#5b6474;
+  --line:#e3e7ef; --accent:#2563eb; --accent-soft:#eaf1fe;
+  --good:#158a4c; --good-bg:#e5f6ec; --bad:#c62838; --bad-bg:#fdecee;
+  --code:#0f1b2d; --code-ink:#dce7f7; --chip:#eef2f8;
+}
+[data-theme="dark"]{
+  --bg:#0d1220; --panel:#151c2e; --ink:#e8edf6; --muted:#9aa5b8;
+  --line:#25304a; --accent:#6ea8ff; --accent-soft:#182641;
+  --good:#4ade80; --good-bg:#10321f; --bad:#f87171; --bad-bg:#3a1418;
+  --code:#0a0f1c; --code-ink:#d7e3f4; --chip:#1b2438;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 64px}
+header.top{background:linear-gradient(135deg,#1d3b8b 0%,#2563eb 55%,#0f766e 100%);color:#fff;padding:34px 0 26px}
+header.top .wrap{padding-bottom:0}
+.top h1{margin:0;font-size:26px;letter-spacing:.2px}
+.top p.sub{margin:6px 0 14px;opacity:.88;font-size:15px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;
+  font-weight:600;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff}
+.badge a{color:#fff;text-decoration:none}
+.banner{margin:-18px 0 22px;border-radius:12px;padding:14px 18px;font-weight:600;
+  display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(13,30,66,.12)}
+.banner.ok{background:var(--good-bg);color:var(--good);border:1px solid var(--good)}
+.banner.bad{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad)}
+.dot{width:10px;height:10px;border-radius:50%;background:currentColor;flex:0 0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:26px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card .kpi{font-size:30px;font-weight:700;line-height:1.1}
+.card .lbl{color:var(--muted);font-size:13px;margin-top:4px}
+section{margin:34px 0}
+h2{font-size:19px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+h2 .n{color:var(--accent);font-size:13px;font-weight:700;letter-spacing:.08em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{ text-align:left;padding:10px 14px;background:var(--chip);color:var(--muted);
+  font-size:12px;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line)}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--accent-soft)}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.pill.pass{background:var(--good-bg);color:var(--good);border:1px solid var(--good)}
+.pill.fail{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad)}
+.pill.neutral{background:var(--chip);color:var(--muted);border:1px solid var(--line)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
+.muted{color:var(--muted)}
+.toolbar{display:flex;gap:10px;align-items:center;margin:0 0 10px;flex-wrap:wrap}
+input.filter{flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--line);
+  border-radius:9px;background:var(--panel);color:var(--ink);font-size:14px}
+button.btn{padding:8px 14px;border-radius:9px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer}
+button.btn:hover{border-color:var(--accent);color:var(--accent)}
+details.dir{margin:2px 0}
+details.dir summary{cursor:pointer;padding:5px 8px;border-radius:7px;list-style:none;
+  font-weight:600;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+details.dir summary:hover{background:var(--accent-soft)}
+details.dir summary::before{content:"+ ";color:var(--accent);font-weight:700}
+details.dir[open]>summary::before{content:"- "}
+.tree-files{padding-left:22px}
+.tree-file{padding:2px 8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--muted)}
+.tree-file .size{color:var(--muted);opacity:.75;font-size:11px;margin-left:8px}
+.tree-file a{color:inherit;text-decoration:none}
+.tree-file a:hover{color:var(--accent)}
+.block{position:relative;background:var(--code);border-radius:10px;margin:10px 0}
+.block pre{margin:0;padding:14px 90px 14px 16px;overflow-x:auto;color:var(--code-ink);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.6}
+.copy{position:absolute;top:9px;right:9px;padding:5px 12px;border-radius:7px;border:none;
+  background:rgba(255,255,255,.14);color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+.copy:hover{background:rgba(255,255,255,.28)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;counter-reset:step}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;position:relative}
+.step::before{counter-increment:step;content:counter(step);position:absolute;top:-10px;left:14px;
+  width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;
+  font-weight:700;display:flex;align-items:center;justify-content:center}
+.step h4{margin:8px 0 4px;font-size:14px}
+.step p{margin:0;color:var(--muted);font-size:13px}
+.tpl{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.tpl a.card{ text-decoration:none;color:inherit;transition:border-color .15s}
+.tpl a.card:hover{border-color:var(--accent)}
+.tpl .card b{display:block;font-size:14px;margin-bottom:4px}
+.tpl .card span{color:var(--muted);font-size:12.5px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+a.link{color:var(--accent);text-decoration:none}
+a.link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Data Stewardship Toolkit &mdash; Stewardship Dashboard</h1>
+    <p class="sub">Dataset inventory &middot; licence and rights register &middot; metadata &middot;
+    checksums &middot; versioned ingestion &middot; figure provenance. Generated by
+    <span class="mono">ds-steward 1.0.0</span> on 2026-10-28 06:52 UTC.</p>
+    <div class="badges">
+      <span class="badge">code: MIT</span>
+      <span class="badge">demo data: CC0-1.0</span>
+      <span class="badge">Python &ge; 3.9</span>
+      <span class="badge">pytest + GitHub Actions CI</span>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="banner ok"><span class="dot"></span>All stewardship checks passed &mdash; 17/17 checks green. Every dataset has a licence, metadata and a verified checksum; every figure traces to a versioned input.</div>
+
+  <div class="grid"><div class="card"><div class="kpi">3</div><div class="lbl">Datasets in inventory</div></div><div class="card"><div class="kpi">17/17</div><div class="lbl">Automated checks passed</div></div><div class="card"><div class="kpi">2</div><div class="lbl">Registered licences</div></div><div class="card"><div class="kpi">1</div><div class="lbl">Figures traced to inputs</div></div><div class="card"><div class="kpi">50</div><div class="lbl">Files under stewardship</div></div></div>
+
+  <section id="checks">
+    <h2><span class="n">01</span> Automated check results</h2>
+    <div class="toolbar">
+      <input id="check-filter" class="filter" type="search"
+             placeholder="Filter checks (e.g. licence, checksum, a dataset id)&hellip;">
+      <button id="theme-toggle" class="btn" type="button">Dark mode</button>
+    </div>
+    <div class="panel">
+      <table id="check-table">
+        <thead><tr><th>Dataset</th><th>Check &amp; detail</th><th>Result</th></tr></thead>
+        <tbody><tr><td class='mono'>sample_air_quality</td><td><b>Inventory entry</b><br><span class="muted" style="font-size:12.5px">all required columns present (version 0.1.0, licence cc0_demo)</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Metadata file</b><br><span class="muted" style="font-size:12.5px">valid mapping with 15 top-level fields</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Licence and rights</b><br><span class="muted" style="font-size:12.5px">licence cc0_demo (CC0-1.0) registered in the rights register</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Checksums</b><br><span class="muted" style="font-size:12.5px">1 file(s) verified against checksums/sha256sums.txt</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Provenance log</b><br><span class="muted" style="font-size:12.5px">1 event(s), append-only, latest version 0.1.0</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'>sample_biodiversity</td><td><b>Inventory entry</b><br><span class="muted" style="font-size:12.5px">all required columns present (version 0.1.0, licence cc0_demo)</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Metadata file</b><br><span class="muted" style="font-size:12.5px">valid mapping with 15 top-level fields</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Licence and rights</b><br><span class="muted" style="font-size:12.5px">licence cc0_demo (CC0-1.0) registered in the rights register</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Checksums</b><br><span class="muted" style="font-size:12.5px">1 file(s) verified against checksums/sha256sums.txt</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Provenance log</b><br><span class="muted" style="font-size:12.5px">1 event(s), append-only, latest version 0.1.0</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'>sample_water_quality</td><td><b>Inventory entry</b><br><span class="muted" style="font-size:12.5px">all required columns present (version 0.1.0, licence cc0_demo)</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Metadata file</b><br><span class="muted" style="font-size:12.5px">valid mapping with 15 top-level fields</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Licence and rights</b><br><span class="muted" style="font-size:12.5px">licence cc0_demo (CC0-1.0) registered in the rights register</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Checksums</b><br><span class="muted" style="font-size:12.5px">1 file(s) verified against checksums/sha256sums.txt</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono'></td><td><b>Provenance log</b><br><span class="muted" style="font-size:12.5px">1 event(s), append-only, latest version 0.1.0</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono muted'>repository</td><td><b>Figure tracing</b><br><span class="muted" style="font-size:12.5px">1 figure(s) traced to versioned dataset inputs</span></td><td><span class="pill pass">PASS</span></td></tr>
+<tr><td class='mono muted'>repository</td><td><b>No orphan datasets</b><br><span class="muted" style="font-size:12.5px">every dataset folder has an inventory entry</span></td><td><span class="pill pass">PASS</span></td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="registries">
+    <h2><span class="n">02</span> Dataset inventory</h2>
+    <div class="panel">
+      <table>
+        <thead><tr><th>dataset_id</th><th>Title</th><th>Version / status</th>
+        <th>Licence</th><th>Steward</th><th>Updated</th></tr></thead>
+        <tbody><tr><td class='mono'>sample_air_quality</td><td>Sample Air Quality Measurements (Synthetic)</td><td class='mono'>0.1.0 <span class='pill neutral'>published</span></td><td class='mono'>cc0_demo</td><td class='mono'>toolkit-demo@example.org</td><td class='mono muted'>2026-10-28</td></tr><tr><td class='mono'>sample_biodiversity</td><td>Sample Biodiversity Observations (Synthetic)</td><td class='mono'>0.1.0 <span class='pill neutral'>published</span></td><td class='mono'>cc0_demo</td><td class='mono'>toolkit-demo@example.org</td><td class='mono muted'>2026-10-28</td></tr><tr><td class='mono'>sample_water_quality</td><td>Sample Water Quality Time Series (Synthetic)</td><td class='mono'>0.1.0 <span class='pill neutral'>published</span></td><td class='mono'>cc0_demo</td><td class='mono'>toolkit-demo@example.org</td><td class='mono muted'>2026-10-28</td></tr></tbody>
+      </table>
+    </div>
+    <h2 style="margin-top:28px"><span class="n">03</span> Licence &amp; rights register</h2>
+    <div class="panel">
+      <table>
+        <thead><tr><th>licence_id</th><th>SPDX</th><th>Name</th>
+        <th>Applies to</th><th>Rights holder</th></tr></thead>
+        <tbody><tr><td class='mono'>cc0_demo</td><td class='mono'>CC0-1.0</td><td>CC0 1.0 Universal</td><td class='mono muted'>datasets/sample_air_quality;datasets/sample_biodiversity;datasets/sample_water_quality</td><td>Demo Observatory (synthetic data)</td></tr><tr><td class='mono'>mit_toolkit</td><td class='mono'>MIT</td><td>MIT License</td><td class='mono muted'>repository_code</td><td>Data Stewardship Toolkit Contributors</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="usage">
+    <h2><span class="n">04</span> Usage (copy &amp; paste)</h2>
+    <div class="block"><button class="copy" onclick="dsCopy(this)">Copy</button><pre><code>git clone https://github.com/YOUR-USERNAME/data-stewardship-toolkit.git
+cd data-stewardship-toolkit
+pip install -e &quot;.[dev]&quot;</code></pre></div><div class="block"><button class="copy" onclick="dsCopy(this)">Copy</button><pre><code>ds-steward check              # every licence / metadata / checksum rule
+pytest -v                     # the same rules as a test suite
+ds-steward check --json       # machine-readable report</code></pre></div><div class="block"><button class="copy" onclick="dsCopy(this)">Copy</button><pre><code># Ingest a file as a new version (checksum + provenance + inventory sync)
+ds-steward ingest --dataset sample_air_quality \
+    --file data/raw/air_quality_feb_2024.csv \
+    --actor your.name@example.org --bump minor \
+    --note &quot;February 2024 batch&quot;</code></pre></div><div class="block"><button class="copy" onclick="dsCopy(this)">Copy</button><pre><code># Register a published figure against a versioned input
+ds-steward figure --figure-id fig02_pm25_trend \
+    --dataset sample_air_quality --output figures/fig02.png \
+    --script scripts/make_fig02.py --actor your.name@example.org</code></pre></div><div class="block"><button class="copy" onclick="dsCopy(this)">Copy</button><pre><code># Publish the repo to GitHub
+git init &amp;&amp; git add . &amp;&amp; git commit -m &quot;Data stewardship toolkit&quot;
+git remote add origin https://github.com/YOUR-USERNAME/data-stewardship-toolkit.git
+git push -u origin main</code></pre></div>
+  </section>
+
+  <section id="ci">
+    <h2><span class="n">05</span> What CI enforces on every push</h2>
+    <div class="steps">
+      <div class="step"><h4>Install toolkit</h4><p>Python 3.11, <span class="mono">pip install -e ".[dev]"</span></p></div>
+      <div class="step"><h4>ds-steward check</h4><p>Licence, metadata, checksum and provenance gates &mdash; fails the build on any gap.</p></div>
+      <div class="step"><h4>pytest</h4><p>Unit + repository-level tests, including tamper detection (broken checksum, missing licence).</p></div>
+      <div class="step"><h4>Dashboard artifact</h4><p><span class="mono">docs/dashboard.html</span> regenerated and uploaded on every run.</p></div>
+    </div>
+  </section>
+
+  <section id="tree">
+    <h2><span class="n">06</span> Repository file tree</h2>
+    <div class="panel" style="padding:10px">
+      <div class="tree-files"><details class="dir"><summary>.github/</summary><div class="tree-files"><details class="dir"><summary>workflows/</summary><div class="tree-files"><div class="tree-file"><a href=".github/workflows/ci.yml">ci.yml</a><span class="size">895 B</span></div></div></details></div></details><details class="dir"><summary>checksums/</summary><div class="tree-files"><div class="tree-file"><a href="checksums/sha256sums.txt">sha256sums.txt</a><span class="size">393 B</span></div></div></details><details class="dir"><summary>datasets/</summary><div class="tree-files"><details class="dir"><summary>sample_air_quality/</summary><div class="tree-files"><details class="dir"><summary>data/</summary><div class="tree-files"><div class="tree-file"><a href="datasets/sample_air_quality/data/air_quality_daily_2024-01.csv">air_quality_daily_2024-01.csv</a><span class="size">1.0 KB</span></div></div></details><div class="tree-file"><a href="datasets/sample_air_quality/metadata.yaml">metadata.yaml</a><span class="size">1.7 KB</span></div><div class="tree-file"><a href="datasets/sample_air_quality/provenance.jsonl">provenance.jsonl</a><span class="size">358 B</span></div></div></details><details class="dir"><summary>sample_biodiversity/</summary><div class="tree-files"><details class="dir"><summary>data/</summary><div class="tree-files"><div class="tree-file"><a href="datasets/sample_biodiversity/data/biodiversity_observations_2024-06.csv">biodiversity_observations_2024-06.csv</a><span class="size">1.4 KB</span></div></div></details><div class="tree-file"><a href="datasets/sample_biodiversity/metadata.yaml">metadata.yaml</a><span class="size">1.7 KB</span></div><div class="tree-file"><a href="datasets/sample_biodiversity/provenance.jsonl">provenance.jsonl</a><span class="size">370 B</span></div></div></details><details class="dir"><summary>sample_water_quality/</summary><div class="tree-files"><details class="dir"><summary>data/</summary><div class="tree-files"><div class="tree-file"><a href="datasets/sample_water_quality/data/water_quality_2024H1.csv">water_quality_2024H1.csv</a><span class="size">438 B</span></div></div></details><div class="tree-file"><a href="datasets/sample_water_quality/metadata.yaml">metadata.yaml</a><span class="size">1.7 KB</span></div><div class="tree-file"><a href="datasets/sample_water_quality/provenance.jsonl">provenance.jsonl</a><span class="size">355 B</span></div></div></details></div></details><details class="dir"><summary>docs/</summary><div class="tree-files"></div></details><details class="dir"><summary>figures/</summary><div class="tree-files"><div class="tree-file"><a href="figures/fig01_air_quality_summary.csv">fig01_air_quality_summary.csv</a><span class="size">122 B</span></div><div class="tree-file"><a href="figures/figure-manifest.jsonl">figure-manifest.jsonl</a><span class="size">551 B</span></div></div></details><details class="dir"><summary>inventory/</summary><div class="tree-files"><div class="tree-file"><a href="inventory/datasets.csv">datasets.csv</a><span class="size">894 B</span></div><div class="tree-file"><a href="inventory/rights-register.csv">rights-register.csv</a><span class="size">545 B</span></div></div></details><details class="dir"><summary>scripts/</summary><div class="tree-files"><div class="tree-file"><a href="scripts/demo_make_figure.py">demo_make_figure.py</a><span class="size">2.4 KB</span></div></div></details><details class="dir"><summary>src/</summary><div class="tree-files"><details class="dir"><summary>data_stewardship/</summary><div class="tree-files"><div class="tree-file"><a href="src/data_stewardship/__init__.py">__init__.py</a><span class="size">444 B</span></div><div class="tree-file"><a href="src/data_stewardship/checks.py">checks.py</a><span class="size">19.1 KB</span></div><div class="tree-file"><a href="src/data_stewardship/cli.py">cli.py</a><span class="size">7.1 KB</span></div><div class="tree-file"><a href="src/data_stewardship/ingest.py">ingest.py</a><span class="size">9.8 KB</span></div><div class="tree-file"><a href="src/data_stewardship/report.py">report.py</a><span class="size">21.7 KB</span></div></div></details></div></details><details class="dir"><summary>templates/</summary><div class="tree-files"><div class="tree-file"><a href="templates/data-management-plan.md">data-management-plan.md</a><span class="size">4.1 KB</span></div><div class="tree-file"><a href="templates/data-request-form.md">data-request-form.md</a><span class="size">2.0 KB</span></div><div class="tree-file"><a href="templates/intake-review-checklist.md">intake-review-checklist.md</a><span class="size">2.0 KB</span></div><div class="tree-file"><a href="templates/README-dataset-template.md">README-dataset-template.md</a><span class="size">1.6 KB</span></div><div class="tree-file"><a href="templates/sop-checksum-and-versioning.md">sop-checksum-and-versioning.md</a><span class="size">2.8 KB</span></div><div class="tree-file"><a href="templates/sop-data-ingestion.md">sop-data-ingestion.md</a><span class="size">2.8 KB</span></div><div class="tree-file"><a href="templates/sop-publication-release.md">sop-publication-release.md</a><span class="size">2.3 KB</span></div></div></details><details class="dir"><summary>tests/</summary><div class="tree-files"><div class="tree-file"><a href="tests/conftest.py">conftest.py</a><span class="size">3.8 KB</span></div><div class="tree-file"><a href="tests/test_checks.py">test_checks.py</a><span class="size">7.2 KB</span></div><div class="tree-file"><a href="tests/test_cli.py">test_cli.py</a><span class="size">2.9 KB</span></div><div class="tree-file"><a href="tests/test_ingest.py">test_ingest.py</a><span class="size">6.5 KB</span></div></div></details><div class="tree-file"><a href=".gitignore">.gitignore</a><span class="size">235 B</span></div><div class="tree-file"><a href="CODE_OF_CONDUCT.md">CODE_OF_CONDUCT.md</a><span class="size">2.5 KB</span></div><div class="tree-file"><a href="CONTRIBUTING.md">CONTRIBUTING.md</a><span class="size">2.0 KB</span></div><div class="tree-file"><a href="LICENSE">LICENSE</a><span class="size">1.1 KB</span></div><div class="tree-file"><a href="Makefile">Makefile</a><span class="size">605 B</span></div><div class="tree-file"><a href="pyproject.toml">pyproject.toml</a><span class="size">1.5 KB</span></div><div class="tree-file"><a href="README.md">README.md</a><span class="size">7.7 KB</span></div></div>
+    </div>
+  </section>
+
+  <section id="templates">
+    <h2><span class="n">07</span> Governance templates</h2>
+    <div class="tpl"><a class="card" href="templates/data-management-plan.md"><b>Data Management Plan</b><span>Science Europe style DMP with fill-in sections</span></a><a class="card" href="templates/sop-data-ingestion.md"><b>SOP: Data ingestion</b><span>From raw file to versioned, checksummed dataset</span></a><a class="card" href="templates/sop-checksum-and-versioning.md"><b>SOP: Checksums &amp; versioning</b><span>SHA-256 policy and semver bump rules</span></a><a class="card" href="templates/sop-publication-release.md"><b>SOP: Publication release</b><span>Pre-release checklist and archiving</span></a><a class="card" href="templates/data-request-form.md"><b>Data request form</b><span>Intake form for incoming data requests</span></a><a class="card" href="templates/intake-review-checklist.md"><b>Intake review checklist</b><span>Reviewer gate before a dataset is accepted</span></a><a class="card" href="templates/README-dataset-template.md"><b>Dataset README</b><span>Per-dataset documentation skeleton</span></a></div>
+  </section>
+
+  <footer>
+    <div>Data Stewardship Toolkit &middot; code licensed MIT &middot; demo datasets CC0-1.0.</div>
+    <div>Links resolve when this file is opened from <span class="mono">docs/dashboard.html</span> inside the repository.</div>
+  </footer>
+</div>
+<script>
+(function(){
+  var root=document.documentElement;
+  var stored=null;
+  try{stored=localStorage.getItem('dst-theme')}catch(e){}
+  if(stored==='dark'||stored==='light'){root.dataset.theme=stored}
+  var btn=document.getElementById('theme-toggle');
+  if(btn){btn.addEventListener('click',function(){
+    var next=root.dataset.theme==='dark'?'light':'dark';
+    root.dataset.theme=next;
+    try{localStorage.setItem('dst-theme',next)}catch(e){}
+    btn.textContent=next==='dark'?'Light mode':'Dark mode';
+  });}
+  function fallbackCopy(text){
+    var ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy')}catch(e){}
+    document.body.removeChild(ta);
+  }
+  window.dsCopy=function(btn){
+    var code=btn.parentNode.querySelector('pre').innerText;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(code).then(function(){flash(btn)},function(){fallbackCopy(code);flash(btn)});
+    }else{fallbackCopy(code);flash(btn)}
+  };
+  function flash(btn){
+    var old=btn.textContent;btn.textContent='Copied';
+    setTimeout(function(){btn.textContent=old},1400);
+  }
+  var filter=document.getElementById('check-filter');
+  if(filter){filter.addEventListener('input',function(){
+    var q=filter.value.toLowerCase();
+    document.querySelectorAll('#check-table tbody tr').forEach(function(tr){
+      tr.style.display=tr.innerText.toLowerCase().indexOf(q)>-1?'':'none';
+    });
+  });}
+})();
+</script>
+</body>
+</html>

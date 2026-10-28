@@ -1,0 +1,53 @@
+dataset_id: sample_biodiversity
+title: Sample Biodiversity Observations (Synthetic)
+description: Field observation records of selected flora and fauna across three sites
+  (BIO-01 to BIO-03) in June 2024, covering meadow, hedgerow, pond-edge and wetland
+  habitats. All records, species counts and observers are synthetic and exist to demonstrate
+  the stewardship workflow.
+created: '2026-10-28'
+version: 0.1.0
+status: published
+steward: toolkit-demo@example.org
+language: en
+licence:
+  licence_id: cc0_demo
+  spdx: CC0-1.0
+  name: CC0 1.0 Universal
+  url: https://creativecommons.org/publicdomain/zero/1.0/
+rights_holder: Demo Observatory (synthetic data)
+keywords:
+- biodiversity
+- species observations
+- synthetic
+- demonstration
+fields:
+- name: date
+  type: date
+  description: Observation date (ISO 8601, YYYY-MM-DD)
+- name: site_id
+  type: string
+  description: Survey site identifier (BIO-01, BIO-02 or BIO-03)
+- name: species_name
+  type: string
+  description: Scientific name of the observed species (binomial nomenclature)
+- name: individual_count
+  type: integer
+  description: Number of individuals observed at the site on that date
+- name: observer
+  type: string
+  description: Synthetic observer name (initials plus surname)
+- name: habitat
+  type: string
+  description: Habitat class of the observation (meadow, hedgerow, pond-edge or wetland)
+files:
+- path: data/biodiversity_observations_2024-06.csv
+  sha256: ea65f25c1f3ada0916acaefc91971983c6d7d8f0e43b59dfeffacdb7eefdb276
+  bytes: 1395
+updated: '2026-10-28'
+provenance:
+- timestamp: '2026-10-28T06:48:21Z'
+  event: ingest
+  version: 0.1.0
+  file: datasets/sample_biodiversity/data/biodiversity_observations_2024-06.csv
+  sha256: ea65f25c1f3ada0916acaefc91971983c6d7d8f0e43b59dfeffacdb7eefdb276
+  actor: demo-steward

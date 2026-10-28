@@ -1,0 +1,53 @@
+dataset_id: sample_air_quality
+title: Sample Air Quality Measurements (Synthetic)
+description: Daily synthetic air-quality measurements for two urban monitoring sites
+  (ST-A, ST-B) covering 1-14 January 2024. Variables include PM2.5, PM10, NO2 and
+  air temperature. The data are entirely synthetic and exist to demonstrate the stewardship
+  workflow; they describe no real location.
+created: '2026-10-28'
+version: 0.1.0
+status: published
+steward: toolkit-demo@example.org
+language: en
+licence:
+  licence_id: cc0_demo
+  spdx: CC0-1.0
+  name: CC0 1.0 Universal
+  url: https://creativecommons.org/publicdomain/zero/1.0/
+rights_holder: Demo Observatory (synthetic data)
+keywords:
+- air quality
+- PM2.5
+- synthetic
+- demonstration
+fields:
+- name: date
+  type: date
+  description: Observation date (ISO 8601, YYYY-MM-DD)
+- name: site_id
+  type: string
+  description: Monitoring site identifier (ST-A or ST-B)
+- name: pm25_ugm3
+  type: number
+  description: Fine particulate matter concentration, micrograms per cubic metre
+- name: pm10_ugm3
+  type: number
+  description: Coarse particulate matter concentration, micrograms per cubic metre
+- name: no2_ugm3
+  type: number
+  description: Nitrogen dioxide concentration, micrograms per cubic metre
+- name: temperature_c
+  type: number
+  description: Air temperature, degrees Celsius
+files:
+- path: data/air_quality_daily_2024-01.csv
+  sha256: 0e6667ec56ec9f4757944d357377b4276f79eb9f014bb637635425b9fafa114f
+  bytes: 1034
+updated: '2026-10-28'
+provenance:
+- timestamp: '2026-10-28T06:48:20Z'
+  event: ingest
+  version: 0.1.0
+  file: datasets/sample_air_quality/data/air_quality_daily_2024-01.csv
+  sha256: 0e6667ec56ec9f4757944d357377b4276f79eb9f014bb637635425b9fafa114f
+  actor: demo-steward

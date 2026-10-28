@@ -1,0 +1,25 @@
+date,site_id,species_name,individual_count,observer,habitat
+2024-06-03,BIO-01,Passer domesticus,12,A. Rivera,hedgerow
+2024-06-03,BIO-01,Achillea millefolium,47,A. Rivera,meadow
+2024-06-03,BIO-02,Maniola jurtina,9,M. Lindgren,meadow
+2024-06-05,BIO-02,Bufo bufo,4,M. Lindgren,pond-edge
+2024-06-05,BIO-03,Ciconia ciconia,2,J. Okafor,wetland
+2024-06-07,BIO-01,Lepus europaeus,3,J. Okafor,meadow
+2024-06-07,BIO-03,Passer domesticus,15,J. Okafor,hedgerow
+2024-06-10,BIO-02,Achillea millefolium,52,M. Lindgren,meadow
+2024-06-10,BIO-01,Maniola jurtina,14,A. Rivera,meadow
+2024-06-12,BIO-03,Bufo bufo,6,J. Okafor,pond-edge
+2024-06-12,BIO-02,Lepus europaeus,1,M. Lindgren,hedgerow
+2024-06-14,BIO-01,Ciconia ciconia,2,A. Rivera,wetland
+2024-06-14,BIO-03,Passer domesticus,18,M. Lindgren,hedgerow
+2024-06-17,BIO-02,Passer domesticus,11,M. Lindgren,hedgerow
+2024-06-17,BIO-01,Achillea millefolium,39,A. Rivera,meadow
+2024-06-19,BIO-03,Maniola jurtina,17,J. Okafor,meadow
+2024-06-21,BIO-02,Bufo bufo,5,A. Rivera,pond-edge
+2024-06-21,BIO-01,Lepus europaeus,2,M. Lindgren,meadow
+2024-06-24,BIO-03,Achillea millefolium,44,J. Okafor,meadow
+2024-06-26,BIO-01,Passer domesticus,13,J. Okafor,hedgerow
+2024-06-26,BIO-02,Ciconia ciconia,3,M. Lindgren,wetland
+2024-06-28,BIO-02,Maniola jurtina,10,A. Rivera,meadow
+2024-06-28,BIO-03,Lepus europaeus,4,M. Lindgren,meadow
+2024-06-30,BIO-01,Bufo bufo,7,A. Rivera,pond-edge

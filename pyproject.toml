@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "data-stewardship-toolkit"
+version = "1.0.0"
+description = "A reproducible data stewardship toolkit: dataset inventory, licence and rights register, metadata, checksums, versioned ingestion and automated compliance checks."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Data Stewardship Toolkit Contributors" }
+]
+keywords = [
+    "data stewardship", "data management", "research data",
+    "metadata", "checksums", "provenance", "RDM", "FAIR"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/YOUR-USERNAME/data-stewardship-toolkit"
+Issues = "https://github.com/YOUR-USERNAME/data-stewardship-toolkit/issues"
+
+[project.scripts]
+ds-steward = "data_stewardship.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

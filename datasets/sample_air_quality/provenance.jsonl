@@ -1,0 +1,1 @@
+{"timestamp": "2026-10-28T06:48:20Z", "event": "ingest", "version": "0.1.0", "file": "datasets/sample_air_quality/data/air_quality_daily_2024-01.csv", "sha256": "0e6667ec56ec9f4757944d357377b4276f79eb9f014bb637635425b9fafa114f", "actor": "demo-steward", "note": "Initial ingestion of synthetic January 2024 series", "tool": "data-stewardship-toolkit 1.0.0"}

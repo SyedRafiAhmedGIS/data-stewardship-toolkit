@@ -1,0 +1,1 @@
+{"timestamp": "2026-10-28T06:48:21Z", "event": "ingest", "version": "0.1.0", "file": "datasets/sample_biodiversity/data/biodiversity_observations_2024-06.csv", "sha256": "ea65f25c1f3ada0916acaefc91971983c6d7d8f0e43b59dfeffacdb7eefdb276", "actor": "demo-steward", "note": "Initial ingestion of synthetic June 2024 observations", "tool": "data-stewardship-toolkit 1.0.0"}

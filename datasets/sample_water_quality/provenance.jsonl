@@ -1,0 +1,1 @@
+{"timestamp": "2026-10-28T06:48:21Z", "event": "ingest", "version": "0.1.0", "file": "datasets/sample_water_quality/data/water_quality_2024H1.csv", "sha256": "c2f4f259b533096ceae9e604f3e6df51215b2c99709e83c9d622223db0678599", "actor": "demo-steward", "note": "Initial ingestion of synthetic Jan-Jun 2024 series", "tool": "data-stewardship-toolkit 1.0.0"}
