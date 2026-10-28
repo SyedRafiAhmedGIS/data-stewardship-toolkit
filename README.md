@@ -46,8 +46,10 @@ data-stewardship-toolkit/
 │       └── provenance.jsonl    # append-only ingestion audit trail
 ├── checksums/sha256sums.txt    # SHA-256 registry for every data file
 ├── figures/                    # published figures + figure-manifest.jsonl
-├── scripts/                    # figure-producing scripts (traced inputs)
+├── scripts/                    # figure scripts (traced) + colab_run.py runner
+├── colab/                      # Google Colab notebook (upload widgets + templates)
 ├── templates/                  # DMP, SOPs, intake forms, dataset README
+│   └── csv/                    # headers-only upload templates per dataset
 └── docs/dashboard.html         # generated stewardship dashboard
 ```
 
@@ -63,6 +65,28 @@ pytest -v               # the same rules, as a test suite
 ds-steward dashboard    # regenerate docs/dashboard.html
 ```
 
+## Run in Google Colab
+
+`colab/data_stewardship_toolkit_colab.ipynb` runs the whole pipeline
+interactively - no local install needed. Open it via
+*GitHub → colab.research.google.com → upload*, or from Colab's *File →
+Upload notebook*. The notebook:
+
+1. **sets up automatically** (clones your repo, `pip install -e ".[dev]"`),
+2. **runs every stewardship check** and shows the result table,
+3. **generates and downloads the CSV upload templates** - headers-only
+   files derived from each dataset's metadata field dictionary - with a
+   preview of **which files to upload and with which columns**,
+4. gives you an **upload widget button** (per-dataset dropdown + version
+   bump selector): your filled template is validated against the header
+   template and ingested as a **new dataset version** with checksum and
+   provenance recorded - mismatches are rejected with a hint,
+5. **re-verifies everything and renders the dashboard** inline.
+
+The same stages work from a terminal (or any Jupyter):
+`python scripts/colab_run.py --stage all` (see `--help` for
+`check/templates/preview/upload/dashboard`).
+
 ## Daily workflow
 
 **1. Register a new dataset** - add one row to
@@ -71,11 +95,17 @@ create `datasets/<id>/metadata.yaml` and a README from the templates.
 
 **2. Ingest data, versioned**
 
+Download the headers-only template for the dataset, fill it in, and
+upload it (Colab widget or CLI). The CSV header is validated against
+the template on every ingestion - mismatched files are rejected before
+they touch the dataset.
+
 ```bash
+ds-steward template --dataset sample_air_quality   # write the CSV template
 ds-steward ingest --dataset sample_air_quality \
     --file data/raw/air_quality_feb_2024.csv \
     --actor your.name@example.org --bump minor \
-    --note "February 2024 batch"
+    --note "February 2024 batch"                   # add --force to skip header validation
 ```
 
 One command: copies the file, computes SHA-256, bumps the semantic
@@ -106,7 +136,8 @@ ds-steward check --json   # exit code 1 on any violation
 | Command | Purpose |
 |---------|---------|
 | `ds-steward check [--json]` | Run all stewardship checks; exit 1 on failure |
-| `ds-steward ingest --dataset ID --file F [--actor A] [--bump patch\|minor\|major] [--note N]` | Versioned ingestion of one data file |
+| `ds-steward ingest --dataset ID --file F [--actor A] [--bump patch\|minor\|major] [--note N] [--force]` | Versioned ingestion of one data file (header-validated against the template) |
+| `ds-steward template --dataset ID \| --all` | Generate headers-only CSV upload templates |
 | `ds-steward figure --figure-id ID --dataset ID --output O --script S [--caption C]` | Register a figure against versioned inputs |
 | `ds-steward dashboard [--output docs/dashboard.html]` | Regenerate the self-contained HTML dashboard |
 | `ds-steward version` | Print the toolkit version |

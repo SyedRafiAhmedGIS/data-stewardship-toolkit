@@ -252,9 +252,12 @@ def generate_dashboard(root: Path, output_path: Path) -> StewardshipReport:
 
     # -- imports kept local to avoid a circular dependency at module load ---- #
     from .checks import read_inventory, read_rights_register, FIGURE_MANIFEST
+    from .templates_csv import template_dir, upload_preview
 
     inventory = read_inventory(root)
     register = read_rights_register(root)
+    upload_rows = upload_preview(root)
+    csv_templates = sorted(template_dir(root).glob("*_template.csv"))
 
     n_figures = 0
     manifest_path = root / FIGURE_MANIFEST
@@ -339,6 +342,18 @@ def generate_dashboard(root: Path, output_path: Path) -> StewardshipReport:
         for row in register.values()
     ) or "<tr><td colspan='5' class='muted'>Rights register is empty.</td></tr>"
 
+    # -- data upload templates -------------------------------------------------- #
+    upload_trs = "".join(
+        "<tr>"
+        f"<td class='mono'>{_esc(row['dataset_id'])}</td>"
+        f"<td class='mono'>{'<a class=\"link\" href=\"templates/csv/' + _esc(row['template_file']) + '\">' + _esc(row['template_file']) + '</a>' if row['template_file'] != '(no field dictionary)' else _esc(row['template_file'])}</td>"
+        f"<td class='mono muted'>{_esc(row['expected_columns'])}</td>"
+        f"<td>{_esc(row['data_files_present'])}</td>"
+        f"<td class='mono'>{_esc(row['version'])}</td>"
+        "</tr>"
+        for row in upload_rows
+    ) or "<tr><td colspan='5' class='muted'>No datasets registered yet.</td></tr>"
+
     # -- usage blocks ------------------------------------------------------------ #
     usage = "".join(
         _code_block(code)
@@ -382,6 +397,8 @@ def generate_dashboard(root: Path, output_path: Path) -> StewardshipReport:
              "Reviewer gate before a dataset is accepted"),
             ("templates/README-dataset-template.md", "Dataset README",
              "Per-dataset documentation skeleton"),
+            ("colab/data_stewardship_toolkit_colab.ipynb", "Google Colab notebook",
+             "Run the toolkit with upload widgets and template downloads"),
         )
     )
 
@@ -472,6 +489,23 @@ def generate_dashboard(root: Path, output_path: Path) -> StewardshipReport:
   <section id="templates">
     <h2><span class="n">07</span> Governance templates</h2>
     <div class="tpl">{templates}</div>
+  </section>
+
+  <section id="upload-templates">
+    <h2><span class="n">08</span> Data upload templates
+      <span class="pill neutral">{len(csv_templates)} generated</span></h2>
+    <p class="muted" style="font-size:13px;margin:0 0 10px">
+      Headers-only CSV files derived from each dataset's metadata field dictionary.
+      Fill one in and upload it via the <a class="link" href="colab/data_stewardship_toolkit_colab.ipynb">Colab notebook</a>
+      or <span class="mono">ds-steward ingest</span> - uploads whose header does not
+      match the template are rejected automatically.</p>
+    <div class="panel">
+      <table>
+        <thead><tr><th>dataset_id</th><th>Template file</th><th>Expected columns (type)</th>
+        <th>Data under stewardship</th><th>Version</th></tr></thead>
+        <tbody>{upload_trs}</tbody>
+      </table>
+    </div>
   </section>
 
   <footer>

@@ -29,6 +29,8 @@ from typing import Dict, List, Optional, Set
 
 import yaml
 
+from .templates_csv import csv_header_of, headers_match
+
 # --------------------------------------------------------------------------- #
 # Layout conventions                                                          #
 # --------------------------------------------------------------------------- #
@@ -395,6 +397,41 @@ def check_dataset(
             f"{len(events)} event(s), append-only, latest version "
             f"{events[-1].get('version', '?')}" if not prov_problems
             else "; ".join(prov_problems[:5])
+        ),
+    ))
+
+    # -- 6. CSV headers match the metadata field dictionary ------------------ #
+    expected = [
+        str(f.get("name", "")).strip()
+        for f in (metadata.get("fields") or [])
+        if isinstance(f, dict) and f.get("name")
+    ]
+    csv_files = [p for p in files if p.suffix.lower() == ".csv"]
+    header_problems: List[str] = []
+    if csv_files and not expected:
+        header_problems.append(
+            "dataset ships CSV files but metadata declares no 'fields' dictionary"
+        )
+    for file_path in csv_files:
+        header = csv_header_of(file_path)
+        rel = _rel(file_path, root)
+        if header is None:
+            header_problems.append(f"{rel}: unreadable/empty CSV")
+        elif not headers_match({"fields": [{"name": n} for n in expected]}, header):
+            header_problems.append(
+                f"{rel}: header {header} does not match metadata fields "
+                f"(expected: {expected})"
+            )
+    report.checks.append(CheckResult(
+        name="Column headers",
+        passed=not header_problems,
+        detail=(
+            (
+                f"{len(csv_files)} CSV file(s) match the field dictionary "
+                f"({len(expected)} columns)" if csv_files
+                else "no CSV files (non-tabular data)"
+            ) if not header_problems
+            else "; ".join(header_problems[:3])
         ),
     ))
 

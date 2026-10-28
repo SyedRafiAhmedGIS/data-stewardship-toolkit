@@ -5,7 +5,7 @@ description: Daily synthetic air-quality measurements for two urban monitoring s
   air temperature. The data are entirely synthetic and exist to demonstrate the stewardship
   workflow; they describe no real location.
 created: '2026-10-28'
-version: 0.1.0
+version: 0.2.0
 status: published
 steward: toolkit-demo@example.org
 language: en
@@ -43,6 +43,9 @@ files:
 - path: data/air_quality_daily_2024-01.csv
   sha256: 0e6667ec56ec9f4757944d357377b4276f79eb9f014bb637635425b9fafa114f
   bytes: 1034
+- path: data/air_quality_daily_2024-02.csv
+  sha256: 8bb8bc10414964417ffab1f444d310e4b7250dfaf2ce6729c1b6bdc4984070eb
+  bytes: 126
 updated: '2026-10-28'
 provenance:
 - timestamp: '2026-10-28T06:48:20Z'
@@ -50,4 +53,10 @@ provenance:
   version: 0.1.0
   file: datasets/sample_air_quality/data/air_quality_daily_2024-01.csv
   sha256: 0e6667ec56ec9f4757944d357377b4276f79eb9f014bb637635425b9fafa114f
+  actor: demo-steward
+- timestamp: '2026-10-28T10:52:30Z'
+  event: ingest
+  version: 0.2.0
+  file: datasets/sample_air_quality/data/air_quality_daily_2024-02.csv
+  sha256: 8bb8bc10414964417ffab1f444d310e4b7250dfaf2ce6729c1b6bdc4984070eb
   actor: demo-steward

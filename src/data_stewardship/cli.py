@@ -69,7 +69,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_ing.add_argument("--bump", choices=("major", "minor", "patch"),
                        default="patch", help="semantic version component to bump")
     p_ing.add_argument("--note", default="", help="free-text note recorded in provenance")
+    p_ing.add_argument("--force", action="store_true",
+                       help="skip the CSV header template validation")
     p_ing.add_argument("--root", default=".", help="repository root (default: .)")
+
+    p_tpl = sub.add_parser("template", help="generate headers-only CSV upload templates")
+    p_tpl.add_argument("--dataset", default=None,
+                       help="dataset_id from the inventory (omit with --all)")
+    p_tpl.add_argument("--all", action="store_true", dest="all_datasets",
+                       help="generate templates for every dataset")
+    p_tpl.add_argument("--root", default=".", help="repository root (default: .)")
 
     p_fig = sub.add_parser("figure", help="register a figure against versioned inputs")
     p_fig.add_argument("--figure-id", required=True, help="unique figure identifier")
@@ -136,6 +145,7 @@ def main(argv=None) -> int:
                 actor=args.actor,
                 bump=args.bump,
                 note=args.note,
+                validate_headers=not args.force,
             )
             print(
                 f"Ingested {event['file']} into {args.dataset} "
@@ -160,6 +170,27 @@ def main(argv=None) -> int:
                 f"version {entry['dataset_version']} ({n_inputs} versioned input(s), "
                 f"chain of custody recorded)."
             )
+            return 0
+
+        if args.command == "template":
+            from .templates_csv import build_all_templates, build_template
+
+            if args.all_datasets:
+                written = build_all_templates(root)
+            elif args.dataset:
+                one = build_template(root, args.dataset)
+                written = [one] if one else []
+                if not written:
+                    print(
+                        f"ERROR: no template generated for {args.dataset!r} "
+                        "(not in inventory or metadata declares no fields).",
+                        file=sys.stderr,
+                    )
+                    return 2
+            else:
+                parser.error("specify --dataset ID or --all")
+            for path in written:
+                print(f"Template written: {path}")
             return 0
 
         if args.command == "dashboard":

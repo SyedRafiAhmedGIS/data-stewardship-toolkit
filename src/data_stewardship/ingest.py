@@ -106,8 +106,14 @@ def ingest_dataset(
     actor: str = "unknown",
     bump: str = "patch",
     note: str = "",
+    validate_headers: bool = True,
 ) -> Dict:
     """Ingest *source_file* into *dataset_id* as a new dataset version.
+
+    For CSV sources the header row is validated against the dataset's
+    metadata field dictionary (the same columns as the downloadable
+    template produced by ``ds-steward template``); pass
+    ``validate_headers=False`` (CLI ``--force``) to bypass that gate.
 
     Returns the provenance event that was recorded. Raises
     :class:`StewardshipError` with an actionable hint when the dataset is
@@ -136,6 +142,29 @@ def ingest_dataset(
     metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8")) or {}
     if not isinstance(metadata, dict):
         raise StewardshipError(f"{metadata_path} is not a YAML mapping")
+
+    # -- header gate: uploaded CSV must follow the published template -------- #
+    if validate_headers and source_file.suffix.lower() == ".csv":
+        from .templates_csv import csv_header_of, expected_columns, template_path
+
+        header = csv_header_of(source_file)
+        expected = [f["name"] for f in expected_columns(metadata)]
+        if header is None:
+            raise StewardshipError(f"{source_file.name}: unreadable or empty CSV file")
+        if not expected:
+            raise StewardshipError(
+                f"{metadata_path} declares no 'fields' dictionary; add one "
+                "before ingesting CSV data."
+            )
+        if [h.lower() for h in header] != [e.lower() for e in expected]:
+            template = template_path(root, dataset_id).name
+            raise StewardshipError(
+                f"{source_file.name}: header {header} does not match the "
+                f"field dictionary for {dataset_id} (expected columns, in order: "
+                f"{expected}). Download the template '{template}' "
+                "(ds-steward template --dataset " + dataset_id + ") or re-run with "
+                "--force to bypass this gate."
+            )
 
     # -- copy file and hash it ---------------------------------------------- #
     data_dir = dataset_dir / "data"
