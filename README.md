@@ -1,4 +1,4 @@
-﻿# Data Stewardship Toolkit
+# Data Stewardship Toolkit
 
 [![CI](https://github.com/SyedRafiAhmedGIS/data-stewardship-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/SyedRafiAhmedGIS/data-stewardship-toolkit/actions/workflows/ci.yml)
 [![code licence: MIT](https://img.shields.io/badge/code%20licence-MIT-green.svg)](LICENSE)
@@ -33,24 +33,24 @@ pass.
 
 ```
 data-stewardship-toolkit/
-â”œâ”€â”€ .github/workflows/ci.yml    # CI: checks + pytest + dashboard artifact
-â”œâ”€â”€ src/data_stewardship/       # the toolkit (checks, ingest, cli, report)
-â”œâ”€â”€ tests/                      # pytest suite incl. tamper-detection tests
-â”œâ”€â”€ inventory/
-â”‚   â”œâ”€â”€ datasets.csv            # dataset inventory (one row per dataset)
-â”‚   â””â”€â”€ rights-register.csv     # licence & rights register
-â”œâ”€â”€ datasets/                   # one folder per dataset
-â”‚   â””â”€â”€ <dataset_id>/
-â”‚       â”œâ”€â”€ metadata.yaml       # machine-readable metadata sidecar
-â”‚       â”œâ”€â”€ data/               # checksummed, versioned data files
-â”‚       â””â”€â”€ provenance.jsonl    # append-only ingestion audit trail
-â”œâ”€â”€ checksums/sha256sums.txt    # SHA-256 registry for every data file
-â”œâ”€â”€ figures/                    # published figures + figure-manifest.jsonl
-â”œâ”€â”€ scripts/                    # figure scripts (traced) + colab_run.py runner
-â”œâ”€â”€ colab/                      # Google Colab notebook (upload widgets + templates)
-â”œâ”€â”€ templates/                  # DMP, SOPs, intake forms, dataset README
-â”‚   â””â”€â”€ csv/                    # headers-only upload templates per dataset
-â””â”€â”€ docs/dashboard.html         # generated stewardship dashboard
+├── .github/workflows/ci.yml    # CI: checks + pytest + dashboard artifact
+├── src/data_stewardship/       # the toolkit (checks, ingest, cli, report)
+├── tests/                      # pytest suite incl. tamper-detection tests
+├── inventory/
+│   ├── datasets.csv            # dataset inventory (one row per dataset)
+│   └── rights-register.csv     # licence & rights register
+├── datasets/                   # one folder per dataset
+│   └── <dataset_id>/
+│       ├── metadata.yaml       # machine-readable metadata sidecar
+│       ├── data/               # checksummed, versioned data files
+│       └── provenance.jsonl    # append-only ingestion audit trail
+├── checksums/sha256sums.txt    # SHA-256 registry for every data file
+├── figures/                    # published figures + figure-manifest.jsonl
+├── scripts/                    # figure scripts (traced) + colab_run.py runner
+├── colab/                      # Google Colab notebook (upload widgets + templates)
+├── templates/                  # DMP, SOPs, intake forms, dataset README
+│   └── csv/                    # headers-only upload templates per dataset
+└── docs/dashboard.html         # generated stewardship dashboard
 ```
 
 ## Quickstart
@@ -69,7 +69,7 @@ ds-steward dashboard    # regenerate docs/dashboard.html
 
 `colab/data_stewardship_toolkit_colab.ipynb` runs the whole pipeline
 interactively - no local install needed. Open it via
-*GitHub â†’ colab.research.google.com â†’ upload*, or from Colab's *File â†’
+*GitHub → colab.research.google.com → upload*, or from Colab's *File →
 Upload notebook*. The notebook:
 
 1. **sets up automatically** (clones your repo, `pip install -e ".[dev]"`),
