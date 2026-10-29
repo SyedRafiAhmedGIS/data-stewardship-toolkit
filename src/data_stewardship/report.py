@@ -343,10 +343,17 @@ def generate_dashboard(root: Path, output_path: Path) -> StewardshipReport:
     ) or "<tr><td colspan='5' class='muted'>Rights register is empty.</td></tr>"
 
     # -- data upload templates -------------------------------------------------- #
+    def _upload_link_cell(row):
+        name = _esc(row['template_file'])
+        if row['template_file'] == '(no field dictionary)':
+            return name
+        href = "templates/csv/" + name
+        return '<a class="link" href="' + href + '">' + name + "</a>"
+
     upload_trs = "".join(
         "<tr>"
         f"<td class='mono'>{_esc(row['dataset_id'])}</td>"
-        f"<td class='mono'>{'<a class=\"link\" href=\"templates/csv/' + _esc(row['template_file']) + '\">' + _esc(row['template_file']) + '</a>' if row['template_file'] != '(no field dictionary)' else _esc(row['template_file'])}</td>"
+        f"<td class='mono'>{_upload_link_cell(row)}</td>"
         f"<td class='mono muted'>{_esc(row['expected_columns'])}</td>"
         f"<td>{_esc(row['data_files_present'])}</td>"
         f"<td class='mono'>{_esc(row['version'])}</td>"
